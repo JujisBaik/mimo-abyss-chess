@@ -33,15 +33,21 @@ export default function Board() {
     <group>
       <mesh position={[0, -0.12, 0]} receiveShadow>
         <boxGeometry args={[9.35, 0.22, 9.35]} />
-        <meshStandardMaterial color="#05070d" metalness={0.65} roughness={0.28} />
+        <meshStandardMaterial
+          color="#08111f"
+          emissive="#071827"
+          emissiveIntensity={0.22}
+          metalness={0.72}
+          roughness={0.22}
+        />
       </mesh>
 
       <mesh position={[0, -0.005, 0]}>
         <boxGeometry args={[8.28, 0.05, 8.28]} />
         <meshStandardMaterial
-          color="#101521"
-          emissive="#101521"
-          emissiveIntensity={0.35}
+          color="#162235"
+          emissive="#0f2d3e"
+          emissiveIntensity={0.42}
           metalness={0.8}
           roughness={0.22}
         />
@@ -50,13 +56,13 @@ export default function Board() {
       {[-4.85, 4.85].map((z) => (
         <mesh key={`rail-z-${z}`} position={[0, 0.18, z]}>
           <boxGeometry args={[9.7, 0.18, 0.16]} />
-          <meshStandardMaterial color="#08111f" emissive="#06b6d4" emissiveIntensity={0.5} />
+          <meshStandardMaterial color="#071827" emissive="#06b6d4" emissiveIntensity={0.72} />
         </mesh>
       ))}
       {[-4.85, 4.85].map((x) => (
         <mesh key={`rail-x-${x}`} position={[x, 0.18, 0]}>
           <boxGeometry args={[0.16, 0.18, 9.7]} />
-          <meshStandardMaterial color="#08111f" emissive="#7c3aed" emissiveIntensity={0.45} />
+          <meshStandardMaterial color="#101126" emissive="#8b5cf6" emissiveIntensity={0.68} />
         </mesh>
       ))}
 
@@ -65,21 +71,23 @@ export default function Board() {
         const isValidMove = validMoves.includes(square);
         const isLastMove = lastMove?.from === square || lastMove?.to === square;
         
-        let color = isLight ? '#263040' : '#111827';
+        let color = isLight ? '#3f5272' : '#0c1727';
         let glow = '#000000';
-        let glowPower = 0;
+        let glowPower = isLight ? 0.08 : 0.02;
         if (isSelected) {
-          color = '#7c3aed';
-          glow = '#a855f7';
-          glowPower = 0.95;
+          color = '#8b5cf6';
+          glow = '#d8b4fe';
+          glowPower = 1.1;
         } else if (isValidMove) {
-          color = '#064e5f';
-          glow = '#22d3ee';
-          glowPower = 0.75;
+          color = '#0e7490';
+          glow = '#67e8f9';
+          glowPower = 0.95;
         } else if (isLastMove) {
-          color = '#312e81';
-          glow = '#818cf8';
-          glowPower = 0.55;
+          color = '#6474c8';
+          glow = '#c4b5fd';
+          glowPower = 0.78;
+        } else {
+          glow = isLight ? '#1e3a5f' : '#020617';
         }
 
         return (
@@ -91,13 +99,13 @@ export default function Board() {
                 activateSquare(square);
               }}
             >
-              <boxGeometry args={[0.96, 0.12, 0.96]} />
+              <boxGeometry args={[0.92, 0.13, 0.92]} />
               <meshStandardMaterial
                 color={color}
                 emissive={glow}
                 emissiveIntensity={glowPower}
-                metalness={0.58}
-                roughness={0.24}
+                metalness={0.5}
+                roughness={0.2}
               />
             </mesh>
 
