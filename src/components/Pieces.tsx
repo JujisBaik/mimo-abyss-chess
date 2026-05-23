@@ -36,7 +36,7 @@ export default function Pieces() {
           result.push({
             type: piece.type,
             color: piece.color,
-            position: [col - 3.5, 0, row - 3.5],
+            position: [col - 3.5, 0.3, row - 3.5],
             square,
           });
         }

@@ -1,73 +1,155 @@
-# React + TypeScript + Vite
+# MiMo Abyss Chess
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+♟️ **MiMo Abyss Chess** — Cinematic 3D Chess Game with Stockfish AI & MiMo Commentary
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🎮 Play Now
 
-## React Compiler
+**Live URL:** https://mimo-abyss-chess.vercel.app
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## ✨ Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Visual
+- 🌑 **Abyss Theme**: Dark void + neon cyan/violet lighting
+- 🎨 **Procedural Pieces**: 6 piece types × 2 colors (white/obsidian)
+- ✨ **Post-Processing**: Bloom + vignette for cinematic feel
+- 🎥 **Orbit Camera**: Free rotation, zoom, and pan
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Gameplay
+- ♟️ **Full Chess Rules**: Check, checkmate, stalemate, en passant, castling
+- 🖱️ **Click-to-Move**: Select piece → highlight valid moves → click destination
+- 👥 **PvP Local**: Play against friends locally
+- 🤖 **vs AI**: Stockfish.wasm integration (coming soon)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### UI
+- 🎯 **HUD**: Turn indicator, move history, status
+- 🎨 **Mode Select**: Choose PvP or vs AI
+- ⚙️ **Settings**: Difficulty slider, player color selection
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology | Purpose |
+|-------|------------|---------|
+| Build | Vite + React 18 + TypeScript | Fast development |
+| 3D | @react-three/fiber + drei | Declarative React Three Fiber |
+| Rules | chess.js | Standard chess rules engine |
+| State | Zustand | Simple state management |
+| UI | TailwindCSS + Framer Motion | Styling & animations |
+
+---
+
+## 📁 Project Structure
+
+```
+mimo-abyss-chess/
+├── src/
+│   ├── components/
+│   │   ├── Board.tsx       # 8x8 interactive board
+│   │   ├── Pieces.tsx      # Procedural 3D pieces
+│   │   ├── Lighting.tsx    # Abyss lighting setup
+│   │   ├── HUD.tsx         # Game HUD overlay
+│   │   └── ModeSelect.tsx  # Mode selection screen
+│   ├── store/
+│   │   └── gameStore.ts    # Zustand state store
+│   ├── App.tsx             # Main app component
+│   └── main.tsx            # Entry point
+├── public/
+│   └── test/               # Manual test pages
+├── tailwind.config.js
+└── vite.config.ts
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🚀 Getting Started
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+
+### Install
+```bash
+git clone https://github.com/JujisBaik/mimo-abyss-chess.git
+cd mimo-abyss-chess
+npm install
 ```
+
+### Run Development
+```bash
+npm run dev
+```
+
+Visit `http://localhost:5173`
+
+### Build for Production
+```bash
+npm run build
+npm run preview
+```
+
+---
+
+## 🎯 How to Play
+
+1. **Select Mode**: Choose PvP or vs AI
+2. **Pick Color**: White or Black
+3. **Click Piece**: Select a piece (highlighted in purple)
+4. **Click Destination**: Valid moves shown in cyan
+5. **Play**: Make moves, check/checkmate detected automatically
+
+---
+
+## 📝 Roadmap
+
+### MVP (Done ✅)
+- [x] 3D board with Abyss theme
+- [x] Chess.js integration
+- [x] Click-to-move with legal move highlighting
+- [x] Mode selection (PvP)
+- [x] Basic HUD
+
+### Coming Soon
+- [ ] Stockfish.wasm AI opponent
+- [ ] MiMo commentary system
+- [ ] Animations (move, capture, check)
+- [ ] Audio (ambient, SFX)
+- [ ] Theme switcher (Cyber, Royal, Lava)
+- [ ] Mobile responsive
+- [ ] PGN export/import
+
+---
+
+## 🐛 Known Issues
+
+1. **Raycasting**: Click detection may need fine-tuning on some devices
+2. **Mobile**: Not fully optimized for touch yet
+3. **AI**: Stockfish integration not yet implemented
+
+---
+
+## 🤝 Contributing
+
+Contributions welcome! Feel free to open issues or pull requests.
+
+---
+
+## 📄 License
+
+MIT License — feel free to use for your MiMo 100T application!
+
+---
+
+## 🔗 Links
+
+- **GitHub**: https://github.com/JujisBaik/mimo-abyss-chess
+- **Live Demo**: https://mimo-abyss-chess.vercel.app
+- **MiMo 100T**: https://100t.xiaomimimo.com/
+
+---
+
+> "Chess, but the void is watching." 👁️

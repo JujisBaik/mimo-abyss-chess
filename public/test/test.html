@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Test HTML Only</title>
+    <style>
+      body { margin: 0; background: #000; color: #fff; font-family: monospace; }
+      #root { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+      button { padding: 20px 40px; font-size: 18px; background: #333; color: #fff; border: none; cursor: pointer; }
+      button:hover { background: #555; }
+      #log { margin-top: 20px; font-size: 14px; color: #888; }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <h1>Test HTML Only</h1>
+      <button id="testBtn">Click Me</button>
+      <div id="log"></div>
+    </div>
+    <script>
+      let clicks = 0;
+      const btn = document.getElementById('testBtn');
+      const log = document.getElementById('log');
+      btn.onclick = () => {
+        clicks++;
+        log.textContent = `Clicks: ${clicks} at ${new Date().toLocaleTimeString()}`;
+        console.log('Button clicked!', clicks);
+      };
+    </script>
+  </body>
+</html>

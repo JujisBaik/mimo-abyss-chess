@@ -35,12 +35,12 @@ function App() {
   const mode = useGameStore((state) => state.mode);
 
   return (
-    <div className="w-full h-full relative">
+    <div className="w-full h-full relative bg-black">
       {/* 3D Canvas */}
       <Canvas
         camera={{ position: [8, 10, 8], fov: 50 }}
         gl={{ antialias: true }}
-        style={{ background: '#0a0a0f' }}
+        style={{ background: '#0a0a0f', cursor: 'crosshair', display: 'block' }}
       >
         <Suspense fallback={null}>
           <Scene />
@@ -54,9 +54,9 @@ function App() {
         <HUD />
       )}
 
-      {/* Loading overlay */}
-      <div className="absolute bottom-4 left-4 text-abyss-accent text-sm opacity-50">
-        MiMo Abyss Chess v0.1
+      {/* Debug info */}
+      <div className="absolute top-2 left-2 text-gray-500 text-xs z-20">
+        v0.1 • Click board to play
       </div>
     </div>
   );

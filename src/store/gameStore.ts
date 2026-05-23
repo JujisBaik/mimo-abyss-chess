@@ -55,16 +55,20 @@ export const useGameStore = create<GameState>((set, get) => ({
   setDifficulty: (depth) => set({ difficulty: depth }),
   
   selectSquare: (square) => {
+    console.log('selectSquare called:', square);
     const { chess } = get();
     const piece = chess.get(square);
+    console.log('Piece at', square, ':', piece);
     
     if (piece && piece.color === chess.turn()) {
       const moves = chess.moves({ square, verbose: true });
+      console.log('Valid moves:', moves);
       set({
         selectedSquare: square,
         validMoves: moves.map((m) => m.to as Square),
       });
     } else {
+      console.log('No piece or wrong color');
       set({ selectedSquare: null, validMoves: [] });
     }
   },

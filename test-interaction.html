@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Interaction</title>
+    <script type="module">
+      import { createRoot } from 'https://esm.sh/react-dom/client';
+      import { Canvas } from 'https://esm.sh/@react-three/fiber';
+      import { OrbitControls } from 'https://esm.sh/@react-three/drei';
+      import React from 'https://esm.sh/react';
+
+      function SimpleBoard() {
+        const [clicks, setClicks] = React.useState([]);
+        
+        return React.createElement(React.Fragment, null,
+          React.createElement('mesh', {
+            position: [0, 0, 0],
+            onClick: () => {
+              const newClick = `Clicked at ${new Date().toLocaleTimeString()}`;
+              setClicks(prev => [...prev, newClick]);
+              console.log(newClick);
+            }
+          },
+            React.createElement('boxGeometry', { args: [8, 0.2, 8] }),
+            React.createElement('meshStandardMaterial', { color: '#222' })
+          ),
+          React.createElement(OrbitControls, {}),
+          React.createElement('ambientLight', { intensity: 0.5 }),
+          React.createElement('directionalLight', { position: [10, 10, 5], intensity: 1 })
+        );
+      }
+
+      function App() {
+        return React.createElement('div', { style: { width: '100vw', height: '100vh', background: '#0a0a0f' } },
+          React.createElement(Canvas, { camera: { position: [0, 10, 10] } },
+            React.createElement(SimpleBoard, {})
+          )
+        );
+      }
+
+      const root = createRoot(document.getElementById('root'));
+      root.render(React.createElement(App));
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

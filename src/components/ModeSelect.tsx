@@ -4,6 +4,8 @@ import { useGameStore } from '../store/gameStore';
 export default function ModeSelect() {
   const { setMode, setPlayerColor, setDifficulty, difficulty, playerColor } = useGameStore();
 
+  console.log('ModeSelect rendered');
+
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-black/80 backdrop-blur-sm z-10">
       <motion.div
@@ -25,7 +27,10 @@ export default function ModeSelect() {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => setMode('pvp')}
+            onClick={() => {
+              console.log('PvP clicked');
+              setMode('pvp');
+            }}
             className="w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-violet-600 rounded-lg font-semibold hover:from-purple-500 hover:to-violet-500 transition-all"
           >
             👥 PvP Local
@@ -34,7 +39,10 @@ export default function ModeSelect() {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => setMode('pve')}
+            onClick={() => {
+              console.log('PvE clicked');
+              setMode('pve');
+            }}
             className="w-full py-4 px-6 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-lg font-semibold hover:from-cyan-500 hover:to-blue-500 transition-all"
           >
             🤖 vs AI (Stockfish)

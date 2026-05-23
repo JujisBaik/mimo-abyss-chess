@@ -22,9 +22,12 @@ export default function Board() {
   }, []);
 
   const handleClick = (square: Square) => {
+    console.log('Board clicked:', square, 'selected:', selectedSquare, 'valid:', validMoves);
     if (selectedSquare && validMoves.includes(square)) {
+      console.log('Making move:', selectedSquare, '->', square);
       makeMove(selectedSquare, square);
     } else {
+      console.log('Selecting square:', square);
       selectSquare(square);
     }
   };
