@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Interaction Test 2 (With Pieces)</title>
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+    <style>
+      body { margin: 0; overflow: hidden; background: #0a0a0f; }
+      canvas { display: block; }
+      #hud { position: absolute; top: 10px; left: 10px; color: #fff; background: #0008; padding: 10px; font-family: monospace; font-size: 14px; }
+      #legend { position: absolute; bottom: 10px; left: 10px; color: #aaa; font-family: monospace; font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <div id="hud">Click on a square</div>
+    <div id="legend">🔵 Cyan = Valid move | 🟣 Purple = Selected | ⚪ White/⚫ Black squares</div>
+    <script>
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enablePan = false;
+      controls.minDistance = 3;
+      controls.maxDistance = 15;
+      controls.minPolarAngle = 0.3;
+      controls.maxPolarAngle = Math.PI / 2.2;
+
+      // Lighting
+      const ambientLight = new THREE.AmbientLight(0x333333);
+      scene.add(ambientLight);
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      directionalLight.position.set(5, 10, 5);
+      scene.add(directionalLight);
+
+      // Board squares
+      const squares = [];
+      const squareSize = 1;
+      const offset = -3.5;
+      
+      for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+          const isLight = (row + col) % 2 === 0;
+          const geometry = new THREE.BoxGeometry(squareSize, 0.1, squareSize);
+          const material = new THREE.MeshBasicMaterial({ 
+            color: isLight ? 0x2d2d3d : 0x1a1a24 
+          });
+          const square = new THREE.Mesh(geometry, material);
+          square.position.set(col + offset, 0, row + offset);
+          square.userData = { row, col, isLight };
+          scene.add(square);
+          squares.push(square);
+        }
+      }
+
+      // Initial pieces (white pawn on e2)
+      const pieceGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.5, 32);
+      const whiteMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.5, roughness: 0.3 });
+      const blackMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a2e, metalness: 0.5, roughness: 0.3 });
+
+      function addPiece(type, color, row, col) {
+        const material = color === 'w' ? whiteMaterial : blackMaterial;
+        const piece = new THREE.Mesh(pieceGeometry, material);
+        piece.position.set(col + offset, 0.3, row + offset);
+        scene.add(piece);
+        return piece;
+      }
+
+      // Add some test pieces
+      addPiece('pawn', 'w', 6, 4); // e2
+      addPiece('pawn', 'w', 6, 3); // d2
+      addPiece('pawn', 'b', 1, 4); // e7
+      addPiece('pawn', 'b', 1, 3); // d7
+
+      camera.position.set(0, 10, 10);
+      camera.lookAt(0, 0, 0);
+
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+      
+      let selectedSquare = null;
+
+      function updateSquareColors() {
+        squares.forEach(sq => {
+          sq.material.color.setHex(sq.userData.isLight ? 0x2d2d3d : 0x1a1a24);
+        });
+        if (selectedSquare) {
+          selectedSquare.material.color.setHex(0x8b5cf6);
+        }
+      }
+
+      function onMouseClick(event) {
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(squares);
+        
+        if (intersects.length > 0) {
+          const square = intersects[0].object;
+          selectedSquare = square;
+          updateSquareColors();
+          
+          const row = square.userData.row;
+          const col = square.userData.col;
+          const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+          const squareName = files[col] + (8 - row);
+          
+          document.getElementById('hud').textContent = `Selected: ${squareName} (${col}, ${row})`;
+        }
+      }
+
+      window.addEventListener('click', onMouseClick);
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+      }
+      animate();
+    </script>
+  </body>
+</html>

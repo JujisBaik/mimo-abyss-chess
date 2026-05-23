@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Simple Chess</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+    <style>
+      body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #111; font-family: monospace; color: #fff; }
+      .board { display: grid; grid-template-columns: repeat(8, 60px); grid-template-rows: repeat(8, 60px); border: 2px solid #333; }
+      .square { width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; font-size: 40px; cursor: pointer; }
+      .light { background: #2d2d3d; }
+      .dark { background: #1a1a24; }
+      .selected { background: #8b5cf6 !important; }
+      .valid { background: #00ffff !important; }
+      .piece { user-select: none; }
+      #status { position: absolute; top: 20px; text-align: center; font-size: 18px; }
+    </style>
+  </head>
+  <body>
+    <div id="status">Catur Sederhana - Click to select/move</div>
+    <div class="board" id="board"></div>
+    <script>
+      const chess = new Chess();
+      const board = document.getElementById('board');
+      const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+      const pieces = { p: '♟', r: '♜', n: '♞', b: '♝', q: '♛', k: '♚', P: '♙', R: '♖', N: '♘', B: '♗', Q: '♕', K: '♔' };
+      let selectedSquare = null;
+
+      function render() {
+        board.innerHTML = '';
+        for (let row = 0; row < 8; row++) {
+          for (let col = 0; col < 8; col++) {
+            const square = files[col] + (8 - row);
+            const piece = chess.get(square);
+            const isLight = (row + col) % 2 === 0;
+            
+            const div = document.createElement('div');
+            div.className = `square ${isLight ? 'light' : 'dark'}`;
+            div.dataset.square = square;
+            
+            if (piece) {
+              const p = piece.color === 'w' ? pieces[piece.type] : pieces[piece.type.toUpperCase()];
+              div.innerHTML = `<span class="piece">${p}</span>`;
+            }
+            
+            div.onclick = () => onSquareClick(square);
+            board.appendChild(div);
+          }
+        }
+        updateStatus();
+        highlightSquares();
+      }
+
+      function onSquareClick(square) {
+        const piece = chess.get(square);
+        
+        if (selectedSquare) {
+          const move = chess.move({ from: selectedSquare, to: square, promotion: 'q' });
+          if (move) {
+            selectedSquare = null;
+            render();
+            return;
+          }
+        }
+        
+        if (piece && piece.color === chess.turn()) {
+          selectedSquare = square;
+        } else {
+          selectedSquare = null;
+        }
+        render();
+      }
+
+      function highlightSquares() {
+        document.querySelectorAll('.square').forEach(sq => {
+          sq.classList.remove('selected', 'valid');
+        });
+        
+        if (selectedSquare) {
+          const div = document.querySelector(`[data-square="${selectedSquare}"]`);
+          if (div) div.classList.add('selected');
+          
+          const moves = chess.moves({ square: selectedSquare, verbose: true });
+          moves.forEach(m => {
+            const div = document.querySelector(`[data-square="${m.to}"]`);
+            if (div) div.classList.add('valid');
+          });
+        }
+      }
+
+      function updateStatus() {
+        const status = document.getElementById('status');
+        if (chess.isCheckmate()) {
+          status.textContent = 'Checkmate! ' + (chess.turn() === 'w' ? 'Black' : 'White') + ' wins!';
+        } else if (chess.isCheck()) {
+          status.textContent = 'Check! ' + (chess.turn() === 'w' ? 'White' : 'Black') + "'s turn";
+        } else if (chess.isDraw()) {
+          status.textContent = 'Draw!';
+        } else {
+          status.textContent = (chess.turn() === 'w' ? 'White' : 'Black') + "'s turn";
+        }
+      }
+
+      render();
+    </script>
+  </body>
+</html>

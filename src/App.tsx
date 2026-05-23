@@ -1,4 +1,7 @@
+'use client';
+
 import { Canvas } from '@react-three/fiber';
+import { useEffect } from 'react';
 import { OrbitControls, Environment } from '@react-three/drei';
 import { Bloom, EffectComposer, Vignette } from '@react-three/postprocessing';
 import { Suspense } from 'react';
@@ -34,6 +37,12 @@ function Scene() {
 function App() {
   const mode = useGameStore((state) => state.mode);
 
+  useEffect(() => {
+    console.log('App mounted');
+  }, []);
+
+  console.log('App rendering, mode:', mode);
+
   return (
     <div className="w-full h-full relative bg-black">
       {/* 3D Canvas */}
@@ -42,7 +51,7 @@ function App() {
         gl={{ antialias: true }}
         style={{ background: '#0a0a0f', cursor: 'crosshair', display: 'block' }}
       >
-        <Suspense fallback={null}>
+        <Suspense fallback={<div>Loading 3D...</div>}>
           <Scene />
         </Suspense>
       </Canvas>

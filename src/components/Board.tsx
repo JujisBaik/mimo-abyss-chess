@@ -49,6 +49,10 @@ export default function Board() {
             key={square}
             position={position}
             onClick={() => handleClick(square)}
+            onPointerDown={(e) => {
+              e.stopPropagation();
+              handleClick(square);
+            }}
           >
             <boxGeometry args={[1, 0.1, 1]} />
             <meshStandardMaterial color={color} emissive={isSelected || isValidMove ? color : 0x000000} />
