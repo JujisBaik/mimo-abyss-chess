@@ -1,5 +1,6 @@
 import { Chess, type Color, type Square } from 'chess.js';
 import { create } from 'zustand';
+import { playSfx, setSfxEnabled } from '../audio/sfx';
 
 export type GameMode = 'pvp' | 'pve' | null;
 
@@ -30,14 +31,16 @@ interface GameState {
   playerColor: Color;
   difficulty: number;
   aiThinking: boolean;
+  soundEnabled: boolean;
   commentary: string;
 
   selectSquare: (square: Square) => void;
   makeMove: (from: Square, to: Square) => boolean;
   resetGame: () => void;
-  setMode: (mode: GameMode) => void;
+  setMode: (mode: GameMode, silent?: boolean) => void;
   setPlayerColor: (color: Color) => void;
   setDifficulty: (difficulty: number) => void;
+  toggleSound: () => void;
 }
 
 let aiTimer: ReturnType<typeof setTimeout> | null = null;
@@ -122,6 +125,16 @@ const maybeQueueAiMove = (delay = 650) => {
           ? `Void AI took on ${applied.to}.`
           : `Void AI played ${applied.san}.`,
       });
+
+      if (nextChess.isCheckmate()) {
+        playSfx('checkmate');
+      } else if (nextChess.isCheck()) {
+        playSfx('check');
+      } else if (applied.captured) {
+        playSfx('capture');
+      } else {
+        playSfx('move');
+      }
     }
   }, delay);
 };
@@ -135,6 +148,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   playerColor: 'w',
   difficulty: 8,
   aiThinking: false,
+  soundEnabled: true,
   commentary: 'Choose a mode to enter the board.',
 
   selectSquare: (square: Square) => {
@@ -150,6 +164,7 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     if (selectedSquare === square) {
       set({ selectedSquare: null, validMoves: [] });
+      playSfx('select');
       return;
     }
 
@@ -163,6 +178,7 @@ export const useGameStore = create<GameState>((set, get) => ({
           ? `${square.toUpperCase()} is armed.`
           : `${square.toUpperCase()} is trapped.`,
       });
+      playSfx('select');
       return;
     }
 
@@ -204,6 +220,16 @@ export const useGameStore = create<GameState>((set, get) => ({
           : `${move.san}: pressure added.`,
       });
 
+      if (nextChess.isCheckmate()) {
+        playSfx('checkmate');
+      } else if (nextChess.isCheck()) {
+        playSfx('check');
+      } else if (move.captured) {
+        playSfx('capture');
+      } else {
+        playSfx('move');
+      }
+
       maybeQueueAiMove();
       return true;
     } catch {
@@ -224,11 +250,12 @@ export const useGameStore = create<GameState>((set, get) => ({
       aiThinking: false,
       commentary: 'Fresh board. First blood is waiting.',
     });
+    playSfx('reset');
 
     window.setTimeout(() => maybeQueueAiMove(450), 0);
   },
 
-  setMode: (mode: GameMode) => {
+  setMode: (mode: GameMode, silent = false) => {
     if (aiTimer) {
       clearTimeout(aiTimer);
     }
@@ -247,6 +274,9 @@ export const useGameStore = create<GameState>((set, get) => ({
             ? 'Local duel loaded.'
             : 'Choose a mode to enter the board.',
     });
+    if (!silent) {
+      playSfx(mode ? 'menu' : 'reset');
+    }
 
     window.setTimeout(() => maybeQueueAiMove(450), 0);
   },
@@ -258,5 +288,12 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   setDifficulty: (difficulty: number) => {
     set({ difficulty });
+  },
+
+  toggleSound: () => {
+    const nextEnabled = !get().soundEnabled;
+    setSfxEnabled(nextEnabled);
+    set({ soundEnabled: nextEnabled });
+    playSfx(nextEnabled ? 'menu' : 'select');
   },
 }));

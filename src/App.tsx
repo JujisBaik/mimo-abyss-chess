@@ -60,7 +60,7 @@ function App() {
   useEffect(() => {
     const requestedMode = new URLSearchParams(window.location.search).get('mode');
     if (!mode && (requestedMode === 'pvp' || requestedMode === 'pve')) {
-      setMode(requestedMode);
+      setMode(requestedMode, true);
     }
   }, [mode, setMode]);
 

@@ -2,7 +2,15 @@ import { motion } from 'framer-motion';
 import { useGameStore } from '../store/gameStore';
 
 export default function ModeSelect() {
-  const { difficulty, playerColor, setDifficulty, setMode, setPlayerColor } = useGameStore();
+  const {
+    difficulty,
+    playerColor,
+    setDifficulty,
+    setMode,
+    setPlayerColor,
+    soundEnabled,
+    toggleSound,
+  } = useGameStore();
 
   return (
     <div className="absolute inset-0 z-20 flex items-center justify-center bg-[#030712]/70 px-5 backdrop-blur-md">
@@ -49,6 +57,13 @@ export default function ModeSelect() {
                 Black
               </button>
             </div>
+          </div>
+
+          <div className="mt-4 flex items-center justify-between gap-4">
+            <span className="text-sm font-bold uppercase tracking-[0.18em] text-slate-400">Sound</span>
+            <button className="hud-button" onClick={toggleSound}>
+              {soundEnabled ? 'On' : 'Off'}
+            </button>
           </div>
 
           <div className="mt-5">

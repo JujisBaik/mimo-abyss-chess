@@ -2,7 +2,17 @@ import { motion } from 'framer-motion';
 import { useGameStore } from '../store/gameStore';
 
 export default function HUD() {
-  const { aiThinking, chess, commentary, lastMove, mode, resetGame, setMode } = useGameStore();
+  const {
+    aiThinking,
+    chess,
+    commentary,
+    lastMove,
+    mode,
+    resetGame,
+    setMode,
+    soundEnabled,
+    toggleSound,
+  } = useGameStore();
   const turn = chess.turn();
   const isCheck = chess.isCheck();
   const isCheckmate = chess.isCheckmate();
@@ -48,6 +58,9 @@ export default function HUD() {
         >
           <button className="hud-button" onClick={resetGame}>
             New
+          </button>
+          <button className="hud-button" onClick={toggleSound}>
+            {soundEnabled ? 'Sound' : 'Mute'}
           </button>
           <button className="hud-button" onClick={() => setMode(null)}>
             Menu
