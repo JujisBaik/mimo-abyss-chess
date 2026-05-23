@@ -1,14 +1,14 @@
 import { create } from 'zustand';
-import { Chess } from 'chess.js';
+import { Chess, type Square } from 'chess.js';
 
 interface GameState {
   // Game state
   chess: Chess;
   fen: string;
   turn: 'w' | 'b';
-  selectedSquare: string | null;
-  validMoves: string[];
-  lastMove: { from: string; to: string } | null;
+  selectedSquare: Square | null;
+  validMoves: Square[];
+  lastMove: { from: Square; to: Square } | null;
   isCheck: boolean;
   isCheckmate: boolean;
   isDraw: boolean;
@@ -23,10 +23,12 @@ interface GameState {
   setMode: (mode: 'pvp' | 'pve' | null) => void;
   setPlayerColor: (color: 'w' | 'b') => void;
   setDifficulty: (depth: number) => void;
-  selectSquare: (square: string) => void;
-  makeMove: (from: string, to: string, promotion?: string) => boolean;
+  selectSquare: (square: Square) => void;
+  makeMove: (from: Square, to: Square, promotion?: string) => boolean;
   resetGame: () => void;
 }
+
+const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'] as const;
 
 export const useGameStore = create<GameState>((set, get) => ({
   // Initial state
@@ -60,7 +62,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       const moves = chess.moves({ square, verbose: true });
       set({
         selectedSquare: square,
-        validMoves: moves.map((m) => m.to),
+        validMoves: moves.map((m) => m.to as Square),
       });
     } else {
       set({ selectedSquare: null, validMoves: [] });
@@ -108,3 +110,8 @@ export const useGameStore = create<GameState>((set, get) => ({
     });
   },
 }));
+
+// Helper function to get square from row/col
+export const getSquareFromPos = (row: number, col: number): Square => {
+  return (files[col] + (8 - row)) as Square;
+};

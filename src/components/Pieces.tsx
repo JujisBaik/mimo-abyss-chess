@@ -1,7 +1,6 @@
-import { useGameStore } from '../store/gameStore';
+import { useGameStore, getSquareFromPos } from '../store/gameStore';
 import { useMemo } from 'react';
-
-const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+import type { Square } from 'chess.js';
 
 // Piece geometries (procedural)
 const pieceGeometries: Record<string, any> = {
@@ -26,12 +25,12 @@ export default function Pieces() {
       type: string;
       color: 'w' | 'b';
       position: [number, number, number];
-      square: string;
+      square: Square;
     }> = [];
 
     for (let row = 0; row < 8; row++) {
       for (let col = 0; col < 8; col++) {
-        const square = files[col] + (8 - row);
+        const square = getSquareFromPos(row, col);
         const piece = chess.get(square);
         if (piece) {
           result.push({

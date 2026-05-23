@@ -1,16 +1,15 @@
-import { useGameStore } from '../store/gameStore';
+import { useGameStore, getSquareFromPos } from '../store/gameStore';
 import { useMemo } from 'react';
-
-const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+import type { Square } from 'chess.js';
 
 export default function Board() {
   const { selectedSquare, validMoves, lastMove, makeMove, selectSquare } = useGameStore();
 
   const squares = useMemo(() => {
-    const result: Array<{ position: [number, number, number]; square: string; isLight: boolean }> = [];
+    const result: Array<{ position: [number, number, number]; square: Square; isLight: boolean }> = [];
     for (let row = 0; row < 8; row++) {
       for (let col = 0; col < 8; col++) {
-        const square = files[col] + (8 - row);
+        const square = getSquareFromPos(row, col);
         const isLight = (row + col) % 2 === 0;
         result.push({
           position: [col - 3.5, 0, row - 3.5],
@@ -22,7 +21,7 @@ export default function Board() {
     return result;
   }, []);
 
-  const handleClick = (square: string) => {
+  const handleClick = (square: Square) => {
     if (selectedSquare && validMoves.includes(square)) {
       makeMove(selectedSquare, square);
     } else {
