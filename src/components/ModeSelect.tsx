@@ -2,94 +2,72 @@ import { motion } from 'framer-motion';
 import { useGameStore } from '../store/gameStore';
 
 export default function ModeSelect() {
-  const { setMode, setPlayerColor, setDifficulty, difficulty, playerColor } = useGameStore();
-
-  console.log('ModeSelect rendered');
+  const { difficulty, playerColor, setDifficulty, setMode, setPlayerColor } = useGameStore();
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center bg-black/80 backdrop-blur-sm z-10">
+    <div className="absolute inset-0 z-20 flex items-center justify-center bg-[#030712]/70 px-5 backdrop-blur-md">
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="glass rounded-2xl p-8 max-w-md w-full mx-4 text-center"
+        initial={{ opacity: 0, y: 18, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        className="w-full max-w-xl"
       >
-        <motion.h1
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-4xl font-bold mb-2 neon-text text-abyss-accent"
-        >
-          MIMO ABYSS CHESS
-        </motion.h1>
-        <p className="text-gray-400 mb-8">Chess, but the void is watching.</p>
-
-        {/* Mode Selection */}
-        <div className="space-y-4 mb-8">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => {
-              console.log('PvP clicked');
-              setMode('pvp');
-            }}
-            className="w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-violet-600 rounded-lg font-semibold hover:from-purple-500 hover:to-violet-500 transition-all"
-          >
-            👥 PvP Local
-          </motion.button>
-          
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => {
-              console.log('PvE clicked');
-              setMode('pve');
-            }}
-            className="w-full py-4 px-6 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-lg font-semibold hover:from-cyan-500 hover:to-blue-500 transition-all"
-          >
-            🤖 vs AI (Stockfish)
-          </motion.button>
+        <div className="mb-6">
+          <p className="text-xs font-black uppercase tracking-[0.42em] text-cyan-300">MiMo project</p>
+          <h1 className="mt-3 text-5xl font-black leading-none text-white sm:text-7xl">
+            Abyss Chess
+          </h1>
+          <p className="mt-4 max-w-md text-base text-slate-300">
+            Neon relic pieces, legal chess logic, and a rude little void engine.
+          </p>
         </div>
 
-        {/* Settings */}
-        <div className="space-y-4 text-left">
-          <div>
-            <label className="text-gray-400 text-sm">Difficulty (Stockfish Depth): {difficulty}</label>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <button className="mode-card mode-card-primary" onClick={() => setMode('pvp')}>
+            <span className="text-xs uppercase tracking-[0.24em] text-cyan-200">Duel</span>
+            <strong>Local PvP</strong>
+          </button>
+          <button className="mode-card mode-card-secondary" onClick={() => setMode('pve')}>
+            <span className="text-xs uppercase tracking-[0.24em] text-fuchsia-200">Engine</span>
+            <strong>Void AI</strong>
+          </button>
+        </div>
+
+        <div className="glass-panel mt-4 p-4">
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-sm font-bold uppercase tracking-[0.18em] text-slate-400">Side</span>
+            <div className="segmented">
+              <button
+                className={playerColor === 'w' ? 'active' : ''}
+                onClick={() => setPlayerColor('w')}
+              >
+                White
+              </button>
+              <button
+                className={playerColor === 'b' ? 'active' : ''}
+                onClick={() => setPlayerColor('b')}
+              >
+                Black
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-5">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-sm font-bold uppercase tracking-[0.18em] text-slate-400">
+                Void AI depth
+              </span>
+              <span className="font-black text-cyan-200">{difficulty}</span>
+            </div>
             <input
               type="range"
               min="1"
               max="15"
               value={difficulty}
-              onChange={(e) => setDifficulty(Number(e.target.value))}
-              className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+              onChange={(event) => setDifficulty(Number(event.target.value))}
+              className="w-full accent-cyan-300"
             />
           </div>
-
-          <div className="flex gap-4">
-            <button
-              onClick={() => setPlayerColor('w')}
-              className={`flex-1 py-2 rounded-lg font-medium transition-all ${
-                playerColor === 'w'
-                  ? 'bg-white text-black'
-                  : 'bg-gray-700 text-gray-300'
-              }`}
-            >
-              ⚪ White
-            </button>
-            <button
-              onClick={() => setPlayerColor('b')}
-              className={`flex-1 py-2 rounded-lg font-medium transition-all ${
-                playerColor === 'b'
-                  ? 'bg-gray-800 text-white'
-                  : 'bg-gray-700 text-gray-300'
-              }`}
-            >
-              ⚫ Black
-            </button>
-          </div>
         </div>
-
-        <p className="mt-6 text-xs text-gray-500">
-          Powered by Stockfish.wasm + MiMo Commentary
-        </p>
       </motion.div>
     </div>
   );
